@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psykologisk tryghed og budgetmålsætning – AAU Business School</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f7f7f5;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
+.container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+}
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Intro */
+.intro-eyebrow { font-size: 12px; font-weight: 500; color: #1a2e5a; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+.intro-title { font-size: 24px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; line-height: 1.3; }
+.intro-sub { font-size: 15px; color: #555; line-height: 1.65; margin-bottom: 20px; }
+.intro-meta { font-size: 12px; color: #aaa; margin-bottom: 28px; }
+.start-btn { width: 100%; padding: 14px; background: #1a2e5a; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 500; cursor: pointer; }
+.start-btn:hover { background: #152449; }
+.intro-footnote { font-size: 12px; color: #bbb; line-height: 1.6; margin-top: 20px; }
+
+/* Quiz */
+.progress { display: flex; gap: 5px; margin-bottom: 28px; }
+.prog-dot { height: 4px; border-radius: 2px; flex: 1; background: #ddd; }
+.prog-dot.done { background: #1a2e5a; }
+.prog-dot.active { background: #1a2e5a; opacity: 0.4; }
+.section-badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 14px; }
+.q-text { font-size: 18px; font-weight: 500; line-height: 1.45; margin-bottom: 22px; }
+.likert-labels { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-bottom: 8px; }
+.likert-opts { display: flex; gap: 6px; margin-bottom: 28px; }
+.likert-btn { flex: 1; aspect-ratio: 1; border-radius: 8px; border: 1px solid #ccc; background: #fff; cursor: pointer; font-size: 14px; font-weight: 500; color: #666; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.likert-btn:hover { border-color: #1a2e5a; color: #1a2e5a; }
+.likert-btn.selected { background: #1a2e5a; border-color: #1a2e5a; color: #fff; }
+.nav { display: flex; justify-content: space-between; align-items: center; }
+.btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #ccc; font-size: 14px; cursor: pointer; background: #fff; color: #333; }
+.btn:disabled { opacity: 0.35; cursor: default; }
+.btn.primary { background: #1a2e5a; color: #fff; border-color: #1a2e5a; }
+.btn.primary:hover { background: #152449; }
+.counter { font-size: 12px; color: #aaa; }
+
+/* Result */
+.zone-pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; }
+.zone-title { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+.zone-subtitle { font-size: 13px; color: #888; margin-bottom: 12px; }
+.zone-desc { font-size: 14px; line-height: 1.65; color: #444; margin-bottom: 20px; }
+.scores-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.score-card { flex: 1; background: #fff; border: 1px solid #e0ddd6; border-radius: 10px; padding: 12px 14px; }
+.score-name { font-size: 11px; color: #aaa; margin-bottom: 4px; }
+.score-num { font-size: 22px; font-weight: 600; }
+.score-vs { font-size: 11px; margin-top: 3px; }
+.matrix-wrap { background: #fff; border: 1px solid #e0ddd6; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+.matrix-label { font-size: 12px; color: #aaa; margin-bottom: 8px; text-align: center; }
+.disclaimer { font-size: 11px; color: #bbb; text-align: center; margin-top: 8px; margin-bottom: 24px; line-height: 1.5; }
+.result-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+/* Signup */
+.signup-title { font-size: 20px; font-weight: 600; color: #1a2e5a; margin-bottom: 10px; }
+.signup-sub { font-size: 14px; color: #555; line-height: 1.65; margin-bottom: 28px; }
+.signup-form input[type=email] { width: 100%; padding: 13px 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; margin-bottom: 12px; outline: none; }
+.signup-form input[type=email]:focus { border-color: #1a2e5a; }
+.signup-form button { width: 100%; padding: 13px; background: #1a2e5a; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; }
+.signup-form button:hover { background: #152449; }
+.skip-link { display: block; text-align: center; margin-top: 16px; font-size: 13px; color: #aaa; cursor: pointer; }
+.skip-link:hover { color: #1a2e5a; }
+.signup-success { text-align: center; padding: 32px 0; }
+.signup-success .check { font-size: 44px; margin-bottom: 14px; }
+.signup-success p { font-size: 15px; color: #555; line-height: 1.7; }
+.aau-credit { font-size: 12px; color: #bbb; text-align: center; margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- SCREEN 0: Intro -->
+  <div id="s-intro" class="screen active">
+    <div class="intro-eyebrow">AAU Business School</div>
+    <div class="intro-title">Hvad siger jeres budgetproces om jeres kultur?</div>
+    <p class="intro-sub">Besvar 8 korte spørgsmål om psykologisk tryghed og budgetmålsætning, og se hvor din organisation placerer sig i forhold til gennemsnittet af danske virksomheder.</p>
+    <p class="intro-meta">8 spørgsmål · ca. 2 minutter · Ingen data gemmes</p>
+    <button class="start-btn" onclick="goTo('s-quiz')">Start diagnostikken →</button>
+    <p class="intro-footnote">Baseret på ph.d.-forskning fra AAU Business School samt Edmondsons (1999) model for psykologisk tryghed. Gennemsnitsværdier er beregnet på baggrund af data fra danske virksomheder.</p>
+  </div>
+
+  <!-- SCREEN 1: Quiz -->
+  <div id="s-quiz" class="screen">
+    <div class="progress" id="progress"></div>
+    <div id="section-badge" class="section-badge"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="likert-labels" id="likert-labels"></div>
+    <div class="likert-opts" id="likert-opts"></div>
+    <div class="nav">
+      <button class="btn" id="prev-btn" onclick="prev()">Tilbage</button>
+      <span class="counter" id="counter"></span>
+      <button class="btn primary" id="next-btn" onclick="next()">Næste</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Result -->
+  <div id="s-result" class="screen">
+    <div class="zone-pill" id="r-pill"></div>
+    <div class="zone-title" id="r-title"></div>
+    <div class="zone-subtitle" id="r-subtitle"></div>
+    <div class="zone-desc" id="r-desc"></div>
+    <div class="scores-row">
+      <div class="score-card">
+        <div class="score-name">Psykologisk tryghed</div>
+        <div class="score-num" id="r-ps-num"></div>
+        <div class="score-vs" id="r-ps-vs"></div>
+      </div>
+      <div class="score-card">
+        <div class="score-name">Budgetmålsætning</div>
+        <div class="score-num" id="r-bm-num"></div>
+        <div class="score-vs" id="r-bm-vs"></div>
+      </div>
+    </div>
+    <div class="matrix-wrap">
+      <div class="matrix-label">Din placering i matrixen</div>
+      <svg width="100%" viewBox="0 0 480 380">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="12" y="210" text-anchor="middle" fill="#aaa" transform="rotate(-90,12,210)">Psykologisk tryghed</text>
+        <line x1="24" y1="30" x2="24" y2="340" stroke="#ccc" stroke-width="0.5" marker-end="url(#arr)"/>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="28" y="40" fill="#aaa">Høj</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="28" y="334" fill="#aaa">Lav</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="268" y="370" text-anchor="middle" fill="#aaa">Budgetmålsætning</text>
+        <line x1="54" y1="352" x2="460" y2="352" stroke="#ccc" stroke-width="0.5" marker-end="url(#arr)"/>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="58" y="364" fill="#aaa">Nemme</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="452" y="364" text-anchor="end" fill="#aaa">Svære</text>
+        <line x1="258" y1="30" x2="258" y2="340" stroke="#ddd" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <line x1="55" y1="185" x2="448" y2="185" stroke="#ddd" stroke-width="0.5" stroke-dasharray="4 3"/>
+        <text font-family="-apple-system,sans-serif" font-size="9" x="261" y="40" fill="#bbb">Gns. 3,29</text>
+        <text font-family="-apple-system,sans-serif" font-size="9" x="58" y="180" fill="#bbb">Gns. 5,71</text>
+        <!-- Comfort zone: top left -->
+        <rect x="55" y="32" width="200" height="150" rx="4" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+        <text font-family="-apple-system,sans-serif" font-size="11" font-weight="600" x="68" y="52" fill="#633806">Comfort zone</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="68" y="66" fill="#854F0B">Høj tryghed · Nemme mål</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="68" y="84" fill="#854F0B">Ansatte trives, men føler sig</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="68" y="97" fill="#854F0B">ikke tilstrækkeligt udfordret.</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="68" y="118" fill="#BA7517">→ Styrk ambitionsniveauet</text>
+        <text font-family="-apple-system,sans-serif" font-size="9" x="68" y="170" fill="#aaa" font-style="italic">Edmondson (1999)</text>
+        <!-- Learning zone: top right -->
+        <rect x="260" y="32" width="188" height="150" rx="4" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1.5"/>
+        <text font-family="-apple-system,sans-serif" font-size="11" font-weight="600" x="273" y="52" fill="#173404">Learning zone</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="273" y="66" fill="#3B6D11">Høj tryghed · Svære mål</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="273" y="84" fill="#27500A">Fokus på samarbejde og</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="273" y="97" fill="#27500A">læring. Optimal kombination.</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="273" y="118" fill="#3B6D11">→ Fasthold begge dimensioner</text>
+        <text font-family="-apple-system,sans-serif" font-size="9" x="273" y="170" fill="#aaa" font-style="italic">Edmondson (1999)</text>
+        <!-- Apathy zone: bottom left -->
+        <rect x="55" y="188" width="200" height="150" rx="4" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+        <text font-family="-apple-system,sans-serif" font-size="11" font-weight="600" x="68" y="208" fill="#2C2C2A">Apathy zone</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="68" y="222" fill="#5F5E5A">Lav tryghed · Nemme mål</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="68" y="240" fill="#444">Ansatte positionerer sig frem</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="68" y="253" fill="#444">for at dele idéer og skabe værdi.</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="68" y="274" fill="#5F5E5A">→ Kulturen er første indsatsområde</text>
+        <text font-family="-apple-system,sans-serif" font-size="9" x="68" y="326" fill="#aaa" font-style="italic">Edmondson (1999)</text>
+        <!-- Anxiety zone: bottom right -->
+        <rect x="260" y="188" width="188" height="150" rx="4" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+        <text font-family="-apple-system,sans-serif" font-size="11" font-weight="600" x="273" y="208" fill="#501313">Anxiety zone</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="273" y="222" fill="#A32D2D">Lav tryghed · Svære mål</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="273" y="240" fill="#791F1F">Grobund for angst. Ansatte</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="273" y="253" fill="#791F1F">frygter at fremføre idéer.</text>
+        <text font-family="-apple-system,sans-serif" font-size="10" x="273" y="274" fill="#A32D2D">→ Styrk trygheden først</text>
+        <text font-family="-apple-system,sans-serif" font-size="9" x="273" y="326" fill="#aaa" font-style="italic">Edmondson (1999)</text>
+        <!-- User dot -->
+        <circle id="user-dot" cx="-99" cy="-99" r="7" fill="#1a2e5a" stroke="white" stroke-width="2"/>
+        <circle id="user-ring" cx="-99" cy="-99" r="14" fill="none" stroke="#1a2e5a" stroke-width="1" opacity="0.3"/>
+        <text id="user-label" font-family="-apple-system,sans-serif" font-size="10" font-weight="500" fill="#1a2e5a" x="-99" y="-99"></text>
+      </svg>
+    </div>
+    <p class="disclaimer">Ingen svar gemmes eller registreres. Resultatet er kun synligt for dig.<br>Baseret på ph.d.-forskning, AAU Business School &amp; Edmondson (1999).</p>
+    <div class="result-btns">
+      <button class="btn" onclick="restart()">Tag testen igen</button>
+      <button class="btn primary" onclick="goTo('s-signup')">Vil du vide mere? →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Signup -->
+  <div id="s-signup" class="screen">
+    <br>
+    <div class="signup-title">Vil du deltage i forskning eller vide mere?</div>
+    <p class="signup-sub">Indtast din e-mail, hvis du ønsker at høre mere om forskningen bag denne diagnostik, muligheder for samarbejde eller deltagelse i fremtidige studier.</p>
+    <div id="signup-form-wrap">
+      <form class="signup-form" id="signup-form">
+        <input type="email" name="email" placeholder="din@mail.dk" required/>
+        <button type="submit">Send →</button>
+      </form>
+    </div>
+    <div id="signup-success" class="signup-success" style="display:none">
+      <div class="check">✓</div>
+      <p>Tak! Vi vender tilbage hurtigst muligt.</p>
+    </div>
+    <span class="skip-link" onclick="restart()">Nej tak, afslut</span>
+    <p class="aau-credit">AAU Business School · Aalborg Universitet</p>
+  </div>
+
+</div>
+
+<script>
+const PS_AVG = 5.71, BM_AVG = 3.29;
+const Qs = [
+  { dim:"ps", reverse:true,  text:"Hvis man laver en fejl, bliver dette ofte holdt imod én" },
+  { dim:"ps", reverse:false, text:"Man kan tale om problemer og svære emner" },
+  { dim:"ps", reverse:true,  text:"I vores organisation bliver nogle medarbejdere afvist for at være anderledes" },
+  { dim:"ps", reverse:false, text:"Det er sikkert at tage en risiko" },
+  { dim:"ps", reverse:true,  text:"Det er svært at bede om hjælp fra andre" },
+  { dim:"ps", reverse:false, text:"Ingen vil bevidst forsøge at underminere andres indsats" },
+  { dim:"ps", reverse:false, text:"Alle er værdsatte for deres unikke evner og talenter" },
+  { dim:"bm", reverse:false, text:"Hvor svært er det at opnå din organisations budgetmål?" }
+];
+const psL = ["Stærkt uenig","","","Hverken/eller","","","Meget enig"];
+const bmL = ["Meget nemt","","","","Meget svært"];
+let cur = 0, ans = Array(8).fill(null);
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function restart() {
+  cur = 0; ans = Array(8).fill(null);
+  document.getElementById("signup-form-wrap").style.display = "block";
+  document.getElementById("signup-success").style.display = "none";
+  document.getElementById("signup-form").reset();
+  goTo('s-intro');
+  renderQ();
+}
+
+function renderProgress() {
+  document.getElementById("progress").innerHTML = Qs.map((_,i) => {
+    let c = "prog-dot" + (i < cur ? " done" : i === cur ? " active" : "");
+    return `<div class="${c}"></div>`;
+  }).join("");
+}
+
+function renderQ() {
+  const q = Qs[cur], isPS = q.dim === "ps";
+  const badge = document.getElementById("section-badge");
+  badge.textContent = isPS ? `Psykologisk tryghed · ${cur+1} af 7` : "Budgetmålsætning · 8 af 8";
+  badge.style.cssText = isPS
+    ? "background:#ddeeff;color:#185FA5;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;display:inline-block;margin-bottom:14px;"
+    : "background:#faeeda;color:#854F0B;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;display:inline-block;margin-bottom:14px;";
+  document.getElementById("q-text").textContent = q.text;
+  const n = isPS ? 7 : 5, labels = isPS ? psL : bmL;
+  document.getElementById("likert-labels").innerHTML =
+    `<span>${labels[0]}</span><span>${labels[Math.floor((labels.length-1)/2)]}</span><span>${labels[labels.length-1]}</span>`;
+  document.getElementById("likert-opts").innerHTML = Array.from({length:n}, (_,i) => {
+    const v = i+1, sel = ans[cur]===v ? " selected" : "";
+    return `<button class="likert-btn${sel}" onclick="sel(${v})">${v}</button>`;
+  }).join("");
+  document.getElementById("counter").textContent = `${cur+1} / 8`;
+  document.getElementById("prev-btn").disabled = cur === 0;
+  document.getElementById("next-btn").textContent = cur === 7 ? "Se resultat →" : "Næste";
+  document.getElementById("next-btn").disabled = ans[cur] === null;
+  renderProgress();
+}
+
+function sel(v) {
+  ans[cur] = v;
+  document.querySelectorAll(".likert-btn").forEach((b,i) => b.classList.toggle("selected", i+1===v));
+  document.getElementById("next-btn").disabled = false;
+}
+function prev() { if (cur > 0) { cur--; renderQ(); } }
+function next() {
+  if (ans[cur] === null) return;
+  if (cur < 7) { cur++; renderQ(); } else showResult();
+}
+
+function showResult() {
+  const psScore = [0,1,2,3,4,5,6]
+    .map(i => Qs[i].reverse ? (8 - ans[i]) : ans[i])
+    .reduce((a,b) => a+b, 0) / 7;
+  const bmScore = ans[7];
+  const abovePS = psScore >= PS_AVG;
+  const aboveBM = bmScore >= BM_AVG;
+
+  let zone;
+  if (abovePS && aboveBM) {
+    zone = { pill:"#EAF3DE", pillText:"#3B6D11", pillBorder:"#3B6D11",
+      title:"Learning zone", subtitle:"Høj tryghed · Svære mål",
+      desc:"Fokus er på samarbejde og læring i tjeneste af høj performance. Den optimale kombination – studiet viser at ambitiøse mål i en psykologisk tryg proces skaber både organisatorisk læring og finansiel performance. (Edmondson, 1999)" };
+  } else if (abovePS && !aboveBM) {
+    zone = { pill:"#FAEEDA", pillText:"#854F0B", pillBorder:"#BA7517",
+      title:"Comfort zone", subtitle:"Høj tryghed · Nemme mål",
+      desc:"Ansatte trives godt og samarbejder, men føler sig ikke tilstrækkeligt udfordret. Tryghed uden ambitiøse mål giver ikke den finansielle performance, organisationen har potentiale til. (Edmondson, 1999)" };
+  } else if (!abovePS && aboveBM) {
+    zone = { pill:"#FCEBEB", pillText:"#A32D2D", pillBorder:"#A32D2D",
+      title:"Anxiety zone", subtitle:"Lav tryghed · Svære mål",
+      desc:"Grobund for angst. Ansatte frygter at fremføre idéer, prøve nyt eller bede om hjælp – selvom de ved, at godt arbejde kræver netop det. Styrk trygheden, før ambitionerne øges yderligere. (Edmondson, 1999)" };
+  } else {
+    zone = { pill:"#F1EFE8", pillText:"#444441", pillBorder:"#5F5E5A",
+      title:"Apathy zone", subtitle:"Lav tryghed · Nemme mål",
+      desc:"Ansatte er apatiske og bruger energien på at positionere sig frem for at dele idéer og skabe værdi. Kulturen er det første indsatsområde – ambitionerne kan styrkes, når fundamentet er på plads. (Edmondson, 1999)" };
+  }
+
+  document.getElementById("r-pill").textContent = zone.title;
+  document.getElementById("r-pill").style.cssText = `background:${zone.pill};color:${zone.pillText};border:1px solid ${zone.pillBorder};padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;display:inline-block;margin-bottom:10px;`;
+  document.getElementById("r-title").textContent = zone.title;
+  document.getElementById("r-subtitle").textContent = zone.subtitle;
+  document.getElementById("r-desc").textContent = zone.desc;
+
+  const psVs = psScore >= PS_AVG ? `+${(psScore-PS_AVG).toFixed(2)} over gns. (${PS_AVG})` : `${(psScore-PS_AVG).toFixed(2)} under gns. (${PS_AVG})`;
+  const bmVs = bmScore >= BM_AVG ? `+${(bmScore-BM_AVG).toFixed(2)} over gns. (${BM_AVG})` : `${(bmScore-BM_AVG).toFixed(2)} under gns. (${BM_AVG})`;
+
+  document.getElementById("r-ps-num").textContent = psScore.toFixed(2) + " / 7";
+  document.getElementById("r-ps-vs").textContent = psVs;
+  document.getElementById("r-ps-vs").style.color = abovePS ? "#3B6D11" : "#A32D2D";
+  document.getElementById("r-bm-num").textContent = bmScore.toFixed(2) + " / 5";
+  document.getElementById("r-bm-vs").textContent = bmVs;
+  document.getElementById("r-bm-vs").style.color = aboveBM ? "#3B6D11" : "#A32D2D";
+
+  const dotX = 55 + ((bmScore - 1) / 4) * (448 - 55);
+  const dotY = 338 + ((psScore - 1) / 6) * (32 - 338);
+  ["user-dot","user-ring"].forEach(id => {
+    document.getElementById(id).setAttribute("cx", dotX);
+    document.getElementById(id).setAttribute("cy", dotY);
+  });
+  const lbl = document.getElementById("user-label");
+  lbl.setAttribute("x", dotX > 380 ? dotX - 10 : dotX + 10);
+  lbl.setAttribute("y", dotY < 55 ? dotY + 18 : dotY - 12);
+  lbl.setAttribute("text-anchor", dotX > 380 ? "end" : "start");
+  lbl.textContent = "Din org.";
+
+  goTo('s-result');
+}
+
+// Formspree – kun email
+document.getElementById("signup-form").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  try {
+    const res = await fetch("https://formspree.io/f/xlgypqzz", {
+      method: "POST",
+      body: formData,
+      headers: { "Accept": "application/json" }
+    });
+    if (res.ok) {
+      document.getElementById("signup-form-wrap").style.display = "none";
+      document.getElementById("signup-success").style.display = "block";
+    }
+  } catch(err) {
+    window.location.href = "mailto:amjen@business.aau.dk?subject=Interesse i forskning";
+  }
+});
+
+renderQ();
+</script>
+</body>
+</html>
